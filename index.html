@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>クリックで再生</title>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            overflow: hidden; /* スクロール防止 */
+        }
+        #video {
+            display: none; /* 最初は非表示 */
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        /* 動画のデフォルトコントロールを完全に非表示 */
+        video::-webkit-media-controls {
+            display: none !important;
+        }
+    </style>
+</head>
+<body id="container">
+    <div id="message">Click me!</div>
+    <video id="video" playsinline controlsList="nodownload nofullscreen noremoteplayback">
+        <source src="video.mp4" type="video/mp4">
+        お使いのブラウザは動画タグをサポートしていません。
+    </video>
+
+    <script>
+        const container = document.getElementById("container");
+        const message = document.getElementById("message");
+        const video = document.getElementById("video");
+
+        container.addEventListener("click", () => {
+            message.style.display = "none"; // テキストを消す
+            video.style.display = "block";  // 動画を表示
+            video.requestFullscreen();      // フルスクリーンにする
+            video.play().catch(error => console.error("再生エラー:", error));
+
+            // 動画が終わったらタブを閉じる
+            video.addEventListener("ended", () => {
+                document.exitFullscreen(); // フルスクリーン解除
+                window.close();
+            });
+        });
+    </script>
+</body>
+</html>
